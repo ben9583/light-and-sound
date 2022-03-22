@@ -23,7 +23,7 @@ const yellow_pressed_fill =   { fill: "#946000" }
 const timeout = (delay) => new Promise( res => setTimeout(res, delay) );
 
 let sequence = [];
-let sequence_countdown = [...sequence];
+let sequenceCountdown = [...sequence];
 
 function App() {
   let [isPressed, setIsPressed] = useState([false, false, false, false]);
@@ -35,9 +35,9 @@ function App() {
   const clickEvent = (index) => {
     if(!gameStarted) return;
     console.log(index);
-    console.log(sequence_countdown[0])
-    if(sequence_countdown.shift() === index) {
-      if(sequence_countdown.length === 0) {
+    console.log(sequenceCountdown[0])
+    if(sequenceCountdown.shift() === index) {
+      if(sequenceCountdown.length === 0) {
         playGame();
         setGameStarted(false);
       }
@@ -75,7 +75,7 @@ function App() {
       await timeout(250);
     }
 
-    sequence_countdown = [...sequence]
+    sequenceCountdown = [...sequence]
 
     setGameStarted(true)
   }
