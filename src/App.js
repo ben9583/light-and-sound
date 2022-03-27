@@ -3,7 +3,7 @@ import { useState } from 'react';
 import { playNote, startNote, stopNote } from './js/utils/ToneGenerator';
 import './App.css';
 
-const GAME_DURATION = 4;
+const GAME_DURATION = 8;
 
 const BACKGROUND_COLOR = "#282c34";
 const WIN_COLOR = "#22ee22";
