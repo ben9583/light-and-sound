@@ -3,11 +3,16 @@
 let audioCtx = new(window.AudioContext || window.webkitAudioContext)();
 
 function playNote(frequency, duration) {
-  var oscillator = audioCtx.createOscillator();
+  let oscillator = audioCtx.createOscillator();
+  let negativeGainNode = audioCtx.createGain();
 
   oscillator.type = 'square';
-  oscillator.frequency.value = frequency; // value in hertz
-  oscillator.connect(audioCtx.destination);
+  oscillator.frequency.value = frequency;
+  oscillator.connect(negativeGainNode);
+  negativeGainNode.connect(audioCtx.destination);
+
+  negativeGainNode.gain.value = 0.2;
+
   oscillator.start();
 
   setTimeout(
@@ -17,11 +22,16 @@ function playNote(frequency, duration) {
 }
 
 function startNote(frequency, duration) {
-    var oscillator = audioCtx.createOscillator();
-  
+    let oscillator = audioCtx.createOscillator();
+    let negativeGainNode = audioCtx.createGain();
+
     oscillator.type = 'square';
-    oscillator.frequency.value = frequency; // value in hertz
-    oscillator.connect(audioCtx.destination);
+    oscillator.frequency.value = frequency;
+    oscillator.connect(negativeGainNode);
+    negativeGainNode.connect(audioCtx.destination);
+
+    negativeGainNode.gain.value = 0.2;
+
     oscillator.start();
   
     return oscillator
