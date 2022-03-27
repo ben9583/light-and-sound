@@ -59,9 +59,9 @@ function App() {
 
     if(toggle) {
       setPlayingSound(startNote(300 + index * 200))
-    } else {
+    } else if(playingSound != null) {
       stopNote(playingSound);
-      setPlayingSound(null)
+      setPlayingSound(null);
     }
   }
 
