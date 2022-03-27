@@ -10,7 +10,15 @@
   justify-content: center;
   font-size: calc(10px + 2vmin);
   color: white;
-  transition-property: "backgroundColor";
+}
+
+#background {
+  min-height: 100vh;
+  min-width: 100vw;
+  position: absolute;
+  left: 0;
+  top: 0;
+  z-index: -1;
 }
 
 .App-link {

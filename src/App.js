@@ -1,4 +1,6 @@
 import { useState } from 'react';
+
+import { playNote, startNote, stopNote } from './js/utils/ToneGenerator';
 import './App.css';
 
 const GAME_DURATION = 4;
@@ -28,22 +30,25 @@ let sequenceCountdown = [...sequence];
 function App() {
   let [isPressed, setIsPressed] = useState([false, false, false, false]);
   let [gameStarted, setGameStarted] = useState(false);
+  let [waitingForInput, setWaitingForInput] = useState(false);
+
+  let [playingSound, setPlayingSound] = useState(null);
 
   let [headerColor, setHeaderColor] = useState(BACKGROUND_COLOR);
   let [headerSpeed, setHeaderSpeed] = useState(RELAXED_SPEED);
 
   const clickEvent = (index) => {
-    if(!gameStarted) return;
+    if(!waitingForInput) return;
     console.log(index);
     console.log(sequenceCountdown[0])
     if(sequenceCountdown.shift() === index) {
       if(sequenceCountdown.length === 0) {
         playGame();
-        setGameStarted(false);
+        setWaitingForInput(false);
       }
     } else {
       gameLost();
-      setGameStarted(false);
+      setWaitingForInput(false);
     }
   }
 
@@ -51,12 +56,20 @@ function App() {
     let pressed = [...isPressed];
     pressed[index] = toggle;
     setIsPressed(pressed)
+
+    if(toggle) {
+      setPlayingSound(startNote(300 + index * 200))
+    } else {
+      stopNote(playingSound);
+      setPlayingSound(null)
+    }
   }
 
   const displayButtonPress = async (index) => {
     let pressed = [...isPressed];
     pressed[index] = true;
     setIsPressed(pressed);
+    playNote(300 + 200 * index, 500);
     await timeout(500);
     pressed = [...isPressed];
     setIsPressed(pressed)
@@ -77,19 +90,21 @@ function App() {
 
     sequenceCountdown = [...sequence]
 
-    setGameStarted(true)
+    setWaitingForInput(true)
   }
 
   const startGame = () => {
-    document.getElementById("startButton").remove();
     setHeaderColor(PLAYING_COLOR);
+    setGameStarted(true);
     playGame();
   }
 
   const gameWon = async () => {
     console.log("Win!");
+    setGameStarted(false);
     setHeaderSpeed(SUDDEN_SPEED);
     setHeaderColor(WIN_COLOR);
+    resetGame()
     await timeout(SUDDEN_SPEED + 100);
     setHeaderSpeed(RELAXED_SPEED);
     setHeaderColor(BACKGROUND_COLOR);
@@ -97,16 +112,24 @@ function App() {
 
   const gameLost = async () => {
     console.log("Lose!");
+    setGameStarted(false);
     setHeaderSpeed(SUDDEN_SPEED);
     setHeaderColor(LOSE_COLOR);
+    resetGame()
     await timeout(SUDDEN_SPEED + 100);
     setHeaderSpeed(RELAXED_SPEED);
     setHeaderColor(BACKGROUND_COLOR);
   }
 
+  const resetGame = () => {
+    sequence = []
+    sequenceCountdown = []
+  }
+
   return (
     <div className="App">
-      <header id="header" className="App-header" style={{backgroundColor: headerColor, transitionDuration: headerSpeed + 'ms'}}>
+      <div id="background" style={{transitionProperty: "background-color", backgroundColor: headerColor, transitionDuration: headerSpeed + 'ms'}}></div>
+      <header id="header" className="App-header">
         <div style={{flex: 0.5}}><h1 style={{fontSize: "4em"}}>Light and Sound</h1></div>
         <div id="buttonContainer" style={{float: "left", flex: 2}}>
           <svg height="256" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 284.29 251.52" style={{marginRight: 50, marginBottom: 50}}><g id="Layer_2" data-name="Layer 2"><g id="Layer_1-2" data-name="Layer 1"><path onMouseDown={() => togglePressed(0, true)} onMouseUp={() => togglePressed(0, false)} onMouseLeave={() => isPressed ? togglePressed(0, false) : ""} onClick={() => clickEvent(0)} style={isPressed[0] ? green_pressed_fill : green_unpressed_fill} className="cls-1" d="M20,246.52A15,15,0,0,1,7,224L129.14,12.51a15,15,0,0,1,26,0L277.25,224a15,15,0,0,1-13,22.52Z"/><path onMouseDown={() => togglePressed(0, true)} onMouseUp={() => togglePressed(0, false)} onMouseLeave={() => isPressed ? togglePressed(0, false) : ""} onClick={() => clickEvent(0)} style={{fill: "#008a03"}} className="cls-2" d="M142.15,10a9.85,9.85,0,0,1,8.67,5L272.92,226.5a10,10,0,0,1-8.67,15H20a10,10,0,0,1-8.67-15L133.47,15a9.85,9.85,0,0,1,8.68-5m0-10a19.85,19.85,0,0,0-17.34,10L2.71,221.5a20,20,0,0,0,17.33,30H264.25a20,20,0,0,0,17.33-30L159.48,10A19.83,19.83,0,0,0,142.15,0Z"/></g></g></svg>
@@ -115,9 +138,13 @@ function App() {
           <svg height="256" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 289.41 256" style={{marginBottom: 50}}><g id="Layer_2" data-name="Layer 2"><g id="Layer_1-2" data-name="Layer 1"><path onMouseDown={() => togglePressed(3, true)} onMouseUp={() => togglePressed(3, false)} onMouseLeave={() => isPressed ? togglePressed(3, false) : ""} onClick={() => clickEvent(3)} style={isPressed[3] ? yellow_pressed_fill : yellow_unpressed_fill} className="cls-1" d="M82.36,251a15,15,0,0,1-13-7.51L7,135.51a15.08,15.08,0,0,1,0-15l62.35-108A15,15,0,0,1,82.36,5H207.05a15,15,0,0,1,13,7.51l62.35,108a15.08,15.08,0,0,1,0,15l-62.35,108a15,15,0,0,1-13,7.51Z"/><path onMouseDown={() => togglePressed(3, true)} onMouseUp={() => togglePressed(3, false)} onMouseLeave={() => isPressed ? togglePressed(3, false) : ""} onClick={() => clickEvent(3)} style={{fill: "#bf7b00"}} className="cls-2" d="M207.05,10a10,10,0,0,1,8.67,5l62.35,108a10.07,10.07,0,0,1,0,10L215.72,241a10,10,0,0,1-8.67,5H82.36a10,10,0,0,1-8.67-5L11.34,133a10.07,10.07,0,0,1,0-10L73.69,15a10,10,0,0,1,8.67-5H207.05m0-10H82.36A20,20,0,0,0,65,10L2.68,118a20.05,20.05,0,0,0,0,20L65,246a20,20,0,0,0,17.33,10H207.05a20,20,0,0,0,17.33-10l62.35-108a20.05,20.05,0,0,0,0-20L224.38,10A20,20,0,0,0,207.05,0Z"/></g></g></svg>
         </div>
         <div style={{flex: 1}}>
-          <div id="startButton" onClick={startGame} style={{width: 400, height: 100, backgroundColor: "#52456d", borderRadius: 50, borderWidth: 5, borderColor: "#3a304f", borderStyle: "solid", verticalAlign: "middle", display: "table-cell"}}>
-            <h2 style={{margin: 0}}>Start Game</h2>
-          </div>
+          {
+            !gameStarted ? (
+              <div id="startButton" onClick={startGame} style={{width: 400, height: 100, backgroundColor: "#52456d", borderRadius: 50, borderWidth: 5, borderColor: "#3a304f", borderStyle: "solid", verticalAlign: "middle", display: "table-cell"}}>
+                <h2 style={{margin: 0, userSelect: 'none'}}>Start Game</h2>
+              </div>
+            ) : ""
+          }
         </div>
       </header>
     </div>
