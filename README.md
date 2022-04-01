@@ -4,7 +4,7 @@
 
 Submitted by: **Benjamin Plate**
 
-Time spent: **10** hours spent in total
+Time spent: **12** hours spent in total
 
 Link to project: https://glitch.com/edit/#!/faint-marvelous-aphid
 
@@ -71,7 +71,7 @@ One idea I had for this project that I didn't have enough time to complete was a
 
 ## Interview Recording URL Link
 
-[My 5-minute Interview Recording](your-link-here)
+[My 5-minute Interview Recording](https://youtu.be/-AKUcwzn39I)
 
 
 ## License
